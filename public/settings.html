@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Pengaturan akun Anonymous Chat">
+    <title>Pengaturan - Anonymous Chat</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/auth.css">
+    <link rel="stylesheet" href="/css/chat.css">
+    <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+</head>
+<body>
+    <div class="auth-container">
+        <div class="auth-card" style="max-width: 600px;">
+            <div class="auth-header">
+                <div class="auth-logo">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/>
+                    </svg>
+                </div>
+                <h1 class="auth-title" data-i18n="settings">Pengaturan</h1>
+                <p class="auth-subtitle" data-i18n="manage_account">Kelola akun Anda</p>
+            </div>
+
+            <div class="flex gap-2 mb-3" style="flex-wrap: wrap;">
+                <button class="btn btn-secondary settings-nav-item active" data-section="account">
+                    <span data-i18n="profile">Profil</span>
+                </button>
+                <button class="btn btn-secondary settings-nav-item" data-section="privacy">
+                    <span data-i18n="privacy">Privasi</span>
+                </button>
+                <button class="btn btn-secondary settings-nav-item" data-section="notifications">
+                    <span data-i18n="notifications">Notifikasi</span>
+                </button>
+                <button class="btn btn-secondary settings-nav-item" data-section="language">
+                    <span data-i18n="language">Bahasa</span>
+                </button>
+                <button class="btn btn-secondary settings-nav-item" data-section="appearance">
+                    <span data-i18n="theme">Tampilan</span>
+                </button>
+                <button class="btn btn-secondary settings-nav-item" data-section="blocked">
+                    <span data-i18n="blocked_users">Pengguna Diblokir</span>
+                </button>
+                <button class="btn btn-secondary settings-nav-item" data-section="security">
+                    <span data-i18n="security">Keamanan</span>
+                </button>
+                <button class="btn btn-secondary settings-nav-item" data-section="data">
+                    <span data-i18n="data_management">Pengelolaan Data</span>
+                </button>
+            </div>
+
+            <div id="account-section" class="settings-section">
+                <div class="card">
+                    <h3 class="mb-2" data-i18n="profile">Profil</h3>
+                    <div class="flex items-center gap-2 mb-3">
+                        <div class="avatar avatar-lg" id="settings-avatar">A</div>
+                        <div>
+                            <div style="font-weight: 600;" id="anonymous-id">anony #00000</div>
+                            <div class="text-muted" style="font-size: 12px;" id="user-email">email@example.com</div>
+                            <div id="user-status"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="privacy-section" class="settings-section hidden">
+                <div class="card">
+                    <h3 class="mb-2" data-i18n="privacy">Privasi</h3>
+                    <div class="flex items-center justify-between mb-3">
+                        <label data-i18n="show_online_status">Tampilkan status online</label>
+                        <input type="checkbox" id="show-online-status" class="privacy-toggle" checked>
+                    </div>
+                    <div class="flex items-center justify-between mb-3">
+                        <label data-i18n="share_typing_status">Bagikan status mengetik</label>
+                        <input type="checkbox" id="share-typing-status" class="privacy-toggle" checked>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <label data-i18n="share_read_receipts">Bagikan tanda dibaca</label>
+                        <input type="checkbox" id="share-read-receipts" class="privacy-toggle" checked>
+                    </div>
+                </div>
+            </div>
+
+            <div id="notifications-section" class="settings-section hidden">
+                <div class="card">
+                    <h3 class="mb-2" data-i18n="notifications">Notifikasi</h3>
+                    <div class="flex items-center justify-between">
+                        <label data-i18n="enable_notifications">Aktifkan notifikasi</label>
+                        <input type="checkbox" id="notifications-toggle" checked>
+                    </div>
+                </div>
+            </div>
+
+            <div id="language-section" class="settings-section hidden">
+                <div class="card">
+                    <h3 class="mb-2" data-i18n="language">Bahasa</h3>
+                    <select id="language-select" class="input">
+                        <option value="id">Bahasa Indonesia</option>
+                        <option value="en">English</option>
+                    </select>
+                </div>
+            </div>
+
+            <div id="appearance-section" class="settings-section hidden">
+                <div class="card">
+                    <h3 class="mb-2" data-i18n="theme">Tampilan</h3>
+                    <select id="theme-select" class="input">
+                        <option value="light" data-i18n="light">Terang</option>
+                        <option value="dark" data-i18n="dark">Gelap</option>
+                    </select>
+                    <div class="flex items-center justify-between mt-3">
+                        <label data-i18n="sound">Suara</label>
+                        <input type="checkbox" id="sound-toggle" checked>
+                    </div>
+                </div>
+            </div>
+
+            <div id="blocked-section" class="settings-section hidden">
+                <div class="card">
+                    <h3 class="mb-2" data-i18n="blocked_users">Pengguna Diblokir</h3>
+                    <div id="blocked-users-list"></div>
+                </div>
+            </div>
+
+            <div id="security-section" class="settings-section hidden">
+                <div class="card">
+                    <h3 class="mb-2" data-i18n="security">Keamanan</h3>
+                    <button class="btn btn-primary mb-2" onclick="settingsManager.showChangePasswordModal()">
+                        <span data-i18n="change_password">Ganti Kata Sandi</span>
+                    </button>
+                    <button class="btn btn-secondary" id="appeal-button" onclick="settingsManager.showAppealModal()">
+                        <span data-i18n="appeal">Ajukan Banding</span>
+                    </button>
+                </div>
+            </div>
+
+            <div id="data-section" class="settings-section hidden">
+                <div class="card">
+                    <h3 class="mb-2" data-i18n="data_management">Pengelolaan Data</h3>
+                    <button class="btn btn-primary mb-2" onclick="settingsManager.exportData()">
+                        <span data-i18n="export_data">Export Data</span>
+                    </button>
+                    <button class="btn btn-danger" onclick="settingsManager.showDeleteAccountModal()">
+                        <span data-i18n="delete_account">Hapus Akun</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="flex gap-2 mt-3">
+                <button class="btn btn-secondary" onclick="window.location.href='/chat.html'">
+                    <span data-i18n="back_to_chat">Kembali ke Chat</span>
+                </button>
+                <button class="btn btn-danger" onclick="authManager.logout()">
+                    <span data-i18n="logout">Keluar</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="/js/app.js"></script>
+    <script src="/js/auth.js"></script>
+    <script src="/js/settings.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            await app.checkAuthStatus();
+            
+            if (app.currentUser) {
+                document.getElementById('settings-avatar').textContent = app.currentUser.anonymousId.charAt(0);
+                app.connectSocket();
+            } else {
+                window.location.href = '/login.html';
+            }
+        });
+    </script>
+</body>
+</html>
